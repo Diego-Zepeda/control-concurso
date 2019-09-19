@@ -10,6 +10,10 @@ def agregarProyecto(nuevoProyecto):
     return True
 
 
+def getNumeroProyecto():
+    proyectos = cargar_proyectos()
+    return len(proyectos)
+
 def cargar_proyectos():
     try:
         with open("data/proyectos.dat", "rb") as f:

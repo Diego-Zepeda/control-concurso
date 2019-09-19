@@ -1,6 +1,6 @@
 import os
 
-from scripts.proyectos import agregarProyecto
+from scripts.proyectos import agregarProyecto, getNumeroProyecto
 from scripts.usuarios import agregarUsuario
 from scripts.utilidades import recibirOpcion
 
@@ -27,7 +27,8 @@ def registroEstudiante():
         categoria = recibirOpcion(input("1-App. Móvil   2-Consola o PC"
                                         "¿A que categoría pertenece su proyecto?\n"), 2)
 
-        calificaciones = [dict(originalidad=tuple(),
+        calificaciones = [dict(usuarioJuez="",
+                               originalidad=tuple(),
                                creatividad=tuple(),
                                innovacionImpacio=tuple(),
                                complejidadTecnica=tuple(),
@@ -38,8 +39,9 @@ def registroEstudiante():
                                musica=tuple(),
                                estrategiaJuego=tuple()
                                )]
-        nuevoProyecto = dict(usuario=registroUsuario, nombre=nombre, link=link, nivel=nivel,
-                             categoria=categoria, calificaciones=list())
+        nuevoProyecto = dict(codigo=getNumeroProyecto(), usuario=registroUsuario, nombre=nombre, link=link, nivel=nivel,
+                             categoria=categoria, ganadorConsolaPC=False, ganadorMovil=False, ganadorGeneral=False,
+                             calificacion=0, calificaciones=list())
         if (agregarProyecto(nuevoProyecto)):
             print("Felicidades. Su proyecto se ha registrado con exito.")
         else:
