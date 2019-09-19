@@ -5,7 +5,7 @@ def recibirOpcion(valor, alcance):
             return opcion
         else:
             raise ValueError
-    except:
+    except():
         opcion = recibirOpcion(input("Sólo se permiten usar NÚMEROS del 1 al {}".format(alcance), alcance))
     return opcion
 

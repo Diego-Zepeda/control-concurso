@@ -2,7 +2,7 @@ import os
 from time import sleep
 
 from scripts.administrador import panelAdmin
-from scripts.estudiante import panelEstudiante
+from scripts.estudiante import panelEstudianteIniciado
 from scripts.usuarios import cargar_usuarios
 from scripts.utilidades import recibirOpcion, findDicInList
 
@@ -51,7 +51,7 @@ def _iniciarPanel(rango):
     # if rango == 'juez':
     #    panelJuez()
     if rango == 'estudiante':
-        panelEstudiante()
+        panelEstudianteIniciado()
     elif rango == 'admin':
         panelAdmin()
 

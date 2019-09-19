@@ -51,3 +51,4 @@ def registroEstudiante():
 def panelEstudianteIniciado():
     while True:
         print("En espera de respuesta. Aún no se califica.")
+        os.system("pause")
