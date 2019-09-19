@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
 
-from Session import iniciarSesion
-from scripts.estudiante import panelEstudiante
+from scripts.estudiante import panelEstudiante, registroEstudiante
+from scripts.sesion import iniciarSesion
 from scripts.utilidades import recibirOpcion
 
 radio = 3
@@ -20,7 +20,10 @@ def main():
     if opMenu == 1:
         iniciarSesion("juez")
     if opMenu == 2:
-        panelEstudiante()
+        if panelEstudiante() == 1:
+            iniciarSesion("estudiante")
+        else:
+            registroEstudiante()
     if opMenu == 3:
         iniciarSesion("admin")
 
