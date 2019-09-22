@@ -8,9 +8,7 @@ from scripts.utilidades import recibirOpcion
 def panelEstudiante():
     os.system("cls")
     print("## Inicio como Estudiante ##")
-    _opPanel = recibirOpcion(input("  1 - Iniciar sesión\n"
-                                   "  2 - Registrarse"
-                                   "\n¿Qué opción deseas? : "), 2)
+    _opPanel = recibirOpcion(input("\n¿Qué opción deseas? : "), 2)
     return _opPanel
 
 

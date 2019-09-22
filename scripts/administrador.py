@@ -1,5 +1,6 @@
 import os
 
+from scripts.concurso import cerrarConcurso, cerrarRegistros, verMejoresCalificaciones
 from scripts.usuarios import agregarUsuario, cargar_usuarios, eliminarUsuario
 from scripts.utilidades import recibirOpcion, findDicsInList
 
@@ -23,6 +24,21 @@ def panelAdmin():
                                        "\n"
                                        "9 - Cerrar sesion"
                                        "\n¿Qué opción deseas? : "), 9)
+
+        # Agregar un nuevo juez. #
+        if _opPanel == 1:
+            cerrarConcurso()
+            os.system("pause")
+
+        # Deshabilitar registros.
+        if _opPanel == 2:
+            cerrarRegistros()
+            os.system("pause")
+
+        # Mostrar mejores calificaciones
+        if _opPanel == 3:
+            verMejoresCalificaciones()
+            os.system("pause")
 
         # Agregar un nuevo juez. #
         if _opPanel == 6:

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 
+from scripts.concurso import cargar_estado_concurso
 from scripts.estudiante import panelEstudiante, registroEstudiante
 from scripts.sesion import iniciarSesion
 from scripts.utilidades import recibirOpcion
@@ -29,5 +30,7 @@ def main():
 
 
 if __name__ == '__main__':
+    print(cargar_estado_concurso())
+    os.system("pause")
     while True:
         main()

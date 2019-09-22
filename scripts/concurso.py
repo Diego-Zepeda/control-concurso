@@ -1,12 +1,6 @@
 import pickle
 
 from scripts.proyectos import cargar_proyectos
-from scripts.utilidades import findDicInList
-
-
-def estadoConcurso():
-    concurso = dict(estadoConcurso=True, registrosHabilitados=True, ganadorGeneral=None, ganadorMovil=None,
-                    ganadorConsolaPC=None)
 
 
 def cerrarRegistros():
@@ -15,10 +9,57 @@ def cerrarRegistros():
     guardar_estado_concurso(concurso)
 
 
+def _guardar_ganadores(resultados):
+    resUsers = resultados["usuarios"]
+    userGanGen = resUsers[0]
+    userGanCon = resUsers[1]
+    userGanMov = resUsers[2]
+
+    concurso = cargar_estado_concurso()
+    concurso["ganadorGeneral"] = userGanGen
+    concurso["ganadorMovil"] = userGanMov
+    concurso["ganadorConsolaPC"] = userGanCon
+    guardar_estado_concurso(concurso)
+
 def cerrarConcurso():
+    print("Cerrando concurso..")
+    cerrarRegistros()
+
+    resultados = mejoresCalificaciones()
+    _guardar_ganadores(resultados)
+    verMejoresCalificaciones()
+
+    print("Concurso cerrado.\n")
+
+
+def verMejoresCalificaciones(resultados):
+    resCal = resultados["calificaciones"]
+    calGanGen = resCal[0]
+    calGanCon = resCal[1]
+    calGanMov = resCal[2]
+
+    resUsers = resultados["usuarios"]
+    userGanGen = resUsers[0]
+    userGanCon = resUsers[1]
+    userGanMov = resUsers[2]
+
+    print("---- GENERAL ----\n"
+          f"Principiante - {userGanGen[0]} - {calGanGen[0]} \n"
+          f"Intermedio - {userGanGen[1]} - {calGanGen[1]} \n"
+          f"Avanzado - {userGanGen[2]} - {calGanGen[2]} \n")
+    print("-- Consola --\n"
+          f"Principiante - {userGanCon[0]} - {calGanCon[0]} \n"
+          f"Intermedio - {userGanCon[1]} - {calGanCon[1]} \n"
+          f"Avanzado - {userGanCon[2]} - {calGanCon[2]} \n")
+    print("-- Movil --\n"
+          f"Principiante - {userGanMov[0]} - {calGanMov[0]} \n"
+          f"Intermedio - {userGanMov[1]} - {calGanMov[1]} \n"
+          f"Avanzado - {userGanMov[2]} - {calGanMov[2]} \n")
+
+
+def mejoresCalificaciones():
     proyectos = cargar_proyectos()
-    calificaciones = 0
-    nCalificaciones = 0
+
     usuarioGanadorGeneral = ["", "", ""]
     usuarioGanadorConsolaPC = ["", "", ""]
     usuarioGanadorMovil = ["", "", ""]
@@ -28,35 +69,41 @@ def cerrarConcurso():
     calificacionGanadorMovil = [0, 0, 0]
 
     for proyecto in proyectos:
+        print(proyecto)
         calificacionesJueces = proyecto["calificaciones"]
+
         nivel = proyecto["nivel"]
         categoria = proyecto["categoria"]
         usuario = proyecto["usuario"]
-        for calificacionJuez in calificacionesJueces.items():
-            calificaciones = nCalificaciones = promedioCalificaciones = 0
+        CalificacionesJueces = nCalificacionesJueces = promedioGeneralJueces = 0.0
+        for calificacionJuez in calificacionesJueces:
+            calificacionesJuez = nCalificacionJuez = promedioCalificacionJuez = 0.0
 
-            for k, calificacion in calificacionJuez:
-                calificaciones += calificacion
-                nCalificaciones += 1
+            for k, calificacion in calificacionJuez.items():
+                if not isinstance(calificacion, str):
+                    calificacionesJuez += calificacion
+                    nCalificacionJuez += 1
+            promedioCalificacionJuez = calificacionesJuez / nCalificacionJuez
 
-            promedioCalificaciones = calificaciones / nCalificaciones
+            CalificacionesJueces += promedioCalificacionJuez
+            nCalificacionesJueces += 1
+        promedioGeneralProyecto = CalificacionesJueces / nCalificacionesJueces
 
-            if promedioCalificaciones > calificacionGanadorGeneral[nivel]:
-                calificacionGanadorGeneral[nivel] = promedioCalificaciones
-                usuarioGanadorGeneral[nivel] = usuario
-            if categoria == 1:
-                if promedioCalificaciones > calificacionGanadorMovil[nivel]:
-                    calificacionGanadorMovil[nivel] = promedioCalificaciones
-                    usuarioGanadorMovil[nivel] = usuario
-            else:
-                if promedioCalificaciones > calificacionGanadorConsolaPC[nivel]:
-                    calificacionGanadorConsolaPC[nivel] = promedioCalificaciones
-                    calificacionGanadorConsolaPC[nivel] = usuario
+        if promedioGeneralProyecto > calificacionGanadorGeneral[nivel]:
+            calificacionGanadorGeneral[nivel] = promedioGeneralProyecto
+            usuarioGanadorGeneral[nivel] = usuario
+        if categoria == 1:
+            if promedioGeneralProyecto > calificacionGanadorMovil[nivel]:
+                calificacionGanadorMovil[nivel] = promedioGeneralProyecto
+                usuarioGanadorMovil[nivel] = usuario
+        else:
+            if promedioGeneralProyecto > calificacionGanadorConsolaPC[nivel]:
+                calificacionGanadorConsolaPC[nivel] = promedioGeneralProyecto
+                usuarioGanadorConsolaPC[nivel] = usuario
 
-    concurso = cargar_estado_concurso()
-    concurso["registrosHabilitados"] = False
-    guardar_estado_concurso(concurso)
-
+    res = dict(usuarios=[usuarioGanadorGeneral, usuarioGanadorMovil, usuarioGanadorConsolaPC],
+               calificaciones=[calificacionGanadorGeneral, calificacionGanadorMovil, calificacionGanadorConsolaPC])
+    return res
 
 def cargar_estado_concurso():
     try:
@@ -67,17 +114,6 @@ def cargar_estado_concurso():
         return list()
 
 
-def guardar_estado_concurso(list):
+def guardar_estado_concurso(dict):
     with open("data/concurso.dat", "wb") as f:
-        pickle.dump(list, f)
-
-
-def descalificarProyecto(usuario):
-    dicProyecto = findDicInList(cargar_proyectos(), usuario=usuario)
-    listProyectos = cargar_proyectos()
-    for dic in listProyectos:
-        if dicProyecto == dic:
-            listProyectos.remove(dic)
-            guardar_proyectos(listProyectos)
-            return True
-    return False
+        pickle.dump(dict, f)
