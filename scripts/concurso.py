@@ -1,6 +1,7 @@
 import pickle
 
-from scripts.proyectos import cargar_proyectos
+from scripts.proyectos import cargar_proyectos, guardar_proyectos
+from scripts.usuarios import crearUsuarios
 
 
 def cerrarRegistros():
@@ -12,7 +13,6 @@ def cerrarRegistros():
 def estadoRegistros():
     concurso = cargar_estado_concurso()
     return concurso["registrosHabilitados"]
-
 
 def estadoConcurso():
     concurso = cargar_estado_concurso()
@@ -41,7 +41,8 @@ def cerrarConcurso():
     print("Concurso cerrado.\n")
 
 
-def verMejoresCalificaciones(resultados):
+def verMejoresCalificaciones():
+    resultados = mejoresCalificaciones()
     resCal = resultados["calificaciones"]
     calGanGen = resCal[0]
     calGanCon = resCal[1]
@@ -64,7 +65,6 @@ def verMejoresCalificaciones(resultados):
           f"Principiante - {userGanMov[0]} - {calGanMov[0]} \n"
           f"Intermedio - {userGanMov[1]} - {calGanMov[1]} \n"
           f"Avanzado - {userGanMov[2]} - {calGanMov[2]} \n")
-
 
 def mejoresCalificaciones():
     proyectos = cargar_proyectos()
@@ -126,3 +126,13 @@ def cargar_estado_concurso():
 def guardar_estado_concurso(dict):
     with open("data/concurso.dat", "wb") as f:
         pickle.dump(dict, f)
+
+
+def reiniciarConcurso():
+    guardar_estado_concurso(dict(estadoConcurso=True,
+                                 registrosHabilitados=True,
+                                 ganadorGeneral=[None, None, None],
+                                 ganadorMovil=[None, None, None],
+                                 ganadorConsolaPC=[None, None, None]))
+    guardar_proyectos(list())
+    crearUsuarios()

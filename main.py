@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
 
-from scripts.concurso import cargar_estado_concurso
 from scripts.estudiante import panelEstudiante, registroEstudiante
 from scripts.sesion import iniciarSesion
 from scripts.utilidades import recibirOpcion
@@ -14,8 +13,8 @@ def main():
     print("Bienvenido al concurso")
     print("1 - Soy Juez\n"
           "2 - Soy Estudiante\n"
-          # "3 - Soy Administrador\n"
-          )
+          "3 - Soy Administrador\n")
+
     opMenu = recibirOpcion(input("¿Qué opción desea? : "), 3)
 
     if opMenu == 1:
@@ -30,7 +29,8 @@ def main():
 
 
 if __name__ == '__main__':
-    print(cargar_estado_concurso())
-    os.system("pause")
-    while True:
-        main()
+    try:
+        while True:
+            main()
+    except:
+        pass

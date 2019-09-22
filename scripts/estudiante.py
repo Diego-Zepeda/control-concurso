@@ -15,6 +15,7 @@ def panelEstudiante():
         print("2 - Registrarse")
         nOpciones = 2
     _opPanel = recibirOpcion(input("\n¿Qué opción deseas? : "), nOpciones)
+
     return _opPanel
 
 
@@ -57,9 +58,13 @@ def registroEstudiante():
 def panelEstudianteIniciado():
     while True:
         if estadoConcurso():
+            os.system("cls")
             print("El concurso aún no finaliza, mantengase atento a su correo.")
+            os.system("pause")
+            break
         else:
+            os.system("cls")
             print("El concurso se ha cerrado y los usuarios ganadores son los siguientes")
             verMejoresCalificaciones()
+            os.system("pause")
             break
-        os.system("pause")
