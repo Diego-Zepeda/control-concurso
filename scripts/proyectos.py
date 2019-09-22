@@ -43,7 +43,6 @@ def descalificarProyecto(usuario):
             return True
     return False
 
-
 def generarProyectos(num):
     for x in range(num):
         nombreData = json.loads(requests.get("https://uinames.com/api/?minlen=15").content.decode())

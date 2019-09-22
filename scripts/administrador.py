@@ -1,6 +1,7 @@
 import os
 
 from scripts.concurso import cerrarConcurso, cerrarRegistros, verMejoresCalificaciones
+from scripts.proyectos import descalificarProyecto
 from scripts.usuarios import agregarUsuario, cargar_usuarios, eliminarUsuario
 from scripts.utilidades import recibirOpcion, findDicsInList
 
@@ -25,7 +26,7 @@ def panelAdmin():
                                        "9 - Cerrar sesion"
                                        "\n¿Qué opción deseas? : "), 9)
 
-        # Agregar un nuevo juez. #
+        # Cerrar el concurso. #
         if _opPanel == 1:
             cerrarConcurso()
             os.system("pause")
@@ -33,12 +34,31 @@ def panelAdmin():
         # Deshabilitar registros.
         if _opPanel == 2:
             cerrarRegistros()
+            print("Se han deshabilitado los registros.")
             os.system("pause")
 
         # Mostrar mejores calificaciones
         if _opPanel == 3:
             verMejoresCalificaciones()
             os.system("pause")
+
+        # Descalificar proyecto
+        if _opPanel == 4:
+            while True:
+                os.system("cls")
+                print("-- Descalificar proyecto --")
+                nombreUsuario = input("Introduce el nombre del usuario del dueño del proyecto: ")
+                if descalificarProyecto(nombreUsuario):
+                    print(f"Proyecto '{nombreUsuario}' eliminado exitosamente.")
+                    os.system("pause")
+                    break
+                else:
+                    print(f"Proyecto de usuario '{nombreUsuario}' no existe.")
+                    opcion = recibirOpcion(input("\n 1 - Reintentar con otro usuario."
+                                                 "\n 2 - Salir"
+                                                 "\n¿Qué opción desea? : "), 2)
+                    if opcion == 2:
+                        break
 
         # Agregar un nuevo juez. #
         if _opPanel == 6:
@@ -51,6 +71,7 @@ def panelAdmin():
         if _opPanel == 7:
             while True:
                 os.system("cls")
+                print("-- Eliminar usuario --")
                 nombreUsuario = input("Introduce el nombre del usuario a eliminar: ")
                 if eliminarUsuario(nombreUsuario):
                     print("Usuario '{}' eliminado exitosamente.".format(nombreUsuario))
