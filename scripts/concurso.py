@@ -9,9 +9,14 @@ def cerrarRegistros():
     guardar_estado_concurso(concurso)
 
 
-def estadoConcurso():
+def estadoRegistros():
     concurso = cargar_estado_concurso()
     return concurso["registrosHabilitados"]
+
+
+def estadoConcurso():
+    concurso = cargar_estado_concurso()
+    return concurso["estadoConcurso"]
 
 def _guardar_ganadores(resultados):
     resUsers = resultados["usuarios"]

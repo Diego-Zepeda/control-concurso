@@ -1,14 +1,20 @@
 import os
 
+from scripts.concurso import estadoConcurso, estadoRegistros, verMejoresCalificaciones
 from scripts.proyectos import agregarProyecto, getNumeroProyecto
 from scripts.usuarios import agregarUsuario
 from scripts.utilidades import recibirOpcion
 
 
 def panelEstudiante():
+    nOpciones = 1
     os.system("cls")
     print("## Inicio como Estudiante ##")
-    _opPanel = recibirOpcion(input("\n¿Qué opción deseas? : "), 2)
+    print("1 - Iniciar sesión")
+    if estadoRegistros():
+        print("2 - Registrarse")
+        nOpciones = 2
+    _opPanel = recibirOpcion(input("\n¿Qué opción deseas? : "), nOpciones)
     return _opPanel
 
 
@@ -50,5 +56,10 @@ def registroEstudiante():
 
 def panelEstudianteIniciado():
     while True:
-        print("En espera de respuesta. Aún no se califica.")
+        if estadoConcurso():
+            print("El concurso aún no finaliza, mantengase atento a su correo.")
+        else:
+            print("El concurso se ha cerrado y los usuarios ganadores son los siguientes")
+            verMejoresCalificaciones()
+            break
         os.system("pause")
