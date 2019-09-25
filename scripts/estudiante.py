@@ -7,13 +7,14 @@ from scripts.utilidades import recibirOpcion
 
 
 def panelEstudiante():
-    nOpciones = 1
+    nOpciones = 2
     os.system("cls")
     print("## Inicio como Estudiante ##")
-    print("1 - Iniciar sesión")
+    print("1 - Regresar al menu")
+    print("2 - Iniciar sesión")
     if estadoRegistros():
-        print("2 - Registrarse")
-        nOpciones = 2
+        print("3 - Registrarse")
+        nOpciones = 3
     _opPanel = recibirOpcion(input("\n¿Qué opción deseas? : "), nOpciones)
 
     return _opPanel
@@ -30,23 +31,11 @@ def registroEstudiante():
         nivel = recibirOpcion(input("1-Principiante   2-Intermedio   3-Avanzado\n"
                                     "¿Qué categoría como desarrollador te consideras?: \n"), 3)
         categoria = recibirOpcion(input("1-App. Móvil   2-Consola o PC"
-                                        "¿A que categoría pertenece su proyecto?\n"), 2)
+                                        "\n¿A que categoría pertenece su proyecto?\n"), 2)
 
-        calificaciones = [dict(usuarioJuez="",
-                               originalidad=tuple(),
-                               creatividad=tuple(),
-                               innovacionImpacio=tuple(),
-                               complejidadTecnica=tuple(),
-                               capacidadComercializacion=tuple(),
-                               experienciaJuego=tuple(),
-                               diseno=tuple(),
-                               arte=tuple(),
-                               musica=tuple(),
-                               estrategiaJuego=tuple()
-                               )]
         nuevoProyecto = dict(codigo=getNumeroProyecto(), usuario=registroUsuario, nombre=nombre, link=link, nivel=nivel,
                              categoria=categoria, ganadorConsolaPC=False, ganadorMovil=False, ganadorGeneral=False,
-                             calificacion=0, calificaciones=list())
+                             calificacionesCount=0, calificaciones=list())
         if (agregarProyecto(nuevoProyecto)):
             print("Felicidades. Su proyecto se ha registrado con exito.")
         else:

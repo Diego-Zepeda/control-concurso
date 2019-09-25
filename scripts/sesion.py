@@ -3,6 +3,7 @@ from time import sleep
 
 from scripts.administrador import panelAdmin
 from scripts.estudiante import panelEstudianteIniciado
+from scripts.juez import panelJuez
 from scripts.usuarios import cargar_usuarios
 from scripts.utilidades import recibirOpcion, findDicInList
 
@@ -25,8 +26,8 @@ def iniciarSesion(rango):
         print(respuestasVerificar(res))
 
         if res == 0:
-            sleep(5)
-            _iniciarPanel(rango)
+            # sleep(5)
+            _iniciarPanel(rango, _user)
             break
 
         elif res == 1:
@@ -47,9 +48,9 @@ def iniciarSesion(rango):
             break
 
 
-def _iniciarPanel(rango):
-    # if rango == 'juez':
-    #    panelJuez()
+def _iniciarPanel(rango, user):
+    if rango == 'juez':
+        panelJuez(user)
     if rango == 'estudiante':
         panelEstudianteIniciado()
     elif rango == 'admin':
@@ -63,7 +64,7 @@ def verificarSesion(usuario, contrasena, rango):
     if userExist:
         if rango != dicUser['rango']:
             return 3, respuestasVerificar(3)
-        elif (dicUser['contrasena'] == contrasena):
+        elif dicUser['contrasena'] == contrasena:
 
             return 0, respuestasVerificar(0)
         else:

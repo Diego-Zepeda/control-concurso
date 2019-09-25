@@ -1,7 +1,6 @@
 import json
 import pickle
 import random
-import time
 
 import requests
 
@@ -33,6 +32,30 @@ def guardar_proyectos(list):
         pickle.dump(list, f)
 
 
+def findProyectosJuez(juez):
+    proyectos = cargar_proyectos()
+    proyectosCalificados = []
+    proyectosSinCalificar = []
+
+    for proyecto in proyectos:
+        calificaciones = proyecto["calificaciones"]
+        calificado = False
+        for calificacion in calificaciones:
+            if calificacion["usuarioJuez"] == juez:
+                calificado = True
+                break
+        if calificado:
+            proyectosCalificados.append(proyecto)
+        else:
+            proyectosSinCalificar.append(proyecto)
+
+    # Si tenemos proyectos sin calificar, ordena la lista de acuerdo al numero de calificaciones que tiene,
+    # asi los proyectos que tienen 0 calificaciones, se califican primero y los que tienen muchas, al final.
+    if len(proyectosSinCalificar) > 0:
+        proyectosSinCalificar = sorted(proyectosSinCalificar, key=lambda i: i['calificacionesCount'])
+
+    return dict(calificados=proyectosCalificados, noCalificados=proyectosSinCalificar)
+
 def descalificarProyecto(usuario):
     dicProyecto = findDicInList(cargar_proyectos(), usuario=usuario)
     listProyectos = cargar_proyectos()
@@ -44,16 +67,16 @@ def descalificarProyecto(usuario):
     return False
 
 def generarProyectos(num):
+    nombreData = json.loads(requests.get(f"https://uinames.com/api/?amount={num}").content.decode())
     for x in range(num):
-        nombreData = json.loads(requests.get("https://uinames.com/api/?minlen=15").content.decode())
-        usuario = nombreData["name"] + str(random.randrange(1000))
-        nombre = nombreData["name"] + " " + nombreData["surname"]
+        usuario = nombreData[x]["name"] + str(random.randrange(1000))
+        nombre = nombreData[x]["name"] + " " + nombreData[x]["surname"]
         link = "raandsadasd.com"
-        nivel = random.randrange(3)
-        categoria = random.randrange(3)
+        nivel = random.randint(1, 3)
+        categoria = random.randint(1, 2)
         nuevoProyecto = dict(codigo=getNumeroProyecto(), usuario=usuario, nombre=nombre, link=link, nivel=nivel,
                              categoria=categoria, ganadorConsolaPC=False, ganadorMovil=False, ganadorGeneral=False,
-                             calificacion=0, calificaciones=list())
+                             calificacionesCount=0, calificaciones=list())
 
         agregarProyecto(nuevoProyecto)
         for n in range(5):
@@ -61,9 +84,23 @@ def generarProyectos(num):
                               random.randrange(11), random.randrange(11), random.randrange(11), random.randrange(11),
                               random.randrange(11), random.randrange(11))
             calificarProyecto(usuario, "randomJuez", calificaciones)
-        print("Proyecto nuevo generado...")
-        time.sleep(11)
 
+
+def caseNivelProyecto(nCaso):
+    casos = {
+        1: "Principiante",
+        2: "Intermedio",
+        3: "Avanzado",
+    }
+    return casos.get(nCaso)
+
+
+def caseCategoriaProyecto(nCaso):
+    casos = {
+        1: "App Movil",
+        2: "Consola o PC",
+    }
+    return casos.get(nCaso)
 
 def calificarProyecto(usuarioProyecto, usuarioJuez, tuplaCalificaciones):
     cal = dict(usuarioJuez=usuarioJuez,
@@ -87,6 +124,7 @@ def calificarProyecto(usuarioProyecto, usuarioJuez, tuplaCalificaciones):
     proyectos = cargar_proyectos()
     proyectoCalificado = findDicInList(proyectos, usuario=usuarioProyecto)
     proyectoCalificado["calificaciones"].append(cal)
+    proyectoCalificado["calificacionesCount"] += 1
     for proyecto in proyectos:
 
         if proyecto["usuario"] == usuarioProyecto:

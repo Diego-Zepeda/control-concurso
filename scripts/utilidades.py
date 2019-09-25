@@ -1,14 +1,16 @@
 def recibirOpcion(valor, alcance):
     try:
         opcion = int(valor)
-        if opcion > 0 and opcion <= alcance:
-            return opcion
-        else:
+        try:
+            if opcion > 0 and opcion <= alcance:
+                return opcion
+            else:
+                raise ValueError
+        except ValueError:
             raise ValueError
-    except():
-        opcion = recibirOpcion(input("Sólo se permiten usar NÚMEROS del 1 al {}".format(alcance), alcance))
+    except ValueError:
+        opcion = recibirOpcion(input(f"Sólo se permiten usar NÚMEROS del 1 al {alcance}: "), alcance)
     return opcion
-
 
 def findDicInList(listDic, **kwargs):
     for dic in listDic:

@@ -1,7 +1,8 @@
 import os
 
 from scripts.concurso import cerrarConcurso, cerrarRegistros, verMejoresCalificaciones
-from scripts.proyectos import descalificarProyecto
+from scripts.juez import verProyecto
+from scripts.proyectos import descalificarProyecto, cargar_proyectos
 from scripts.usuarios import agregarUsuario, cargar_usuarios, eliminarUsuario
 from scripts.utilidades import recibirOpcion, findDicsInList
 
@@ -28,8 +29,16 @@ def panelAdmin():
 
         # Cerrar el concurso. #
         if _opPanel == 1:
-            cerrarConcurso()
-            os.system("pause")
+            proyectosSinCalificar = findDicsInList(cargar_proyectos(), calificacionesCount=0)
+            if len(proyectosSinCalificar) > 0:
+                print("No se puede cerrar el concurso porque hay proyectos pendientes de calificacion.")
+                print("--- Proyectos pendientes ---\n")
+                for proyecto in proyectosSinCalificar:
+                    verProyecto(proyecto)
+                os.system("pause")
+            else:
+                cerrarConcurso()
+                os.system("pause")
 
         # Deshabilitar registros.
         if _opPanel == 2:
@@ -41,7 +50,6 @@ def panelAdmin():
         if _opPanel == 3:
             verMejoresCalificaciones()
             os.system("pause")
-
         # Descalificar proyecto
         if _opPanel == 4:
             while True:

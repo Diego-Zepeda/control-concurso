@@ -45,13 +45,13 @@ def verMejoresCalificaciones():
     resultados = mejoresCalificaciones()
     resCal = resultados["calificaciones"]
     calGanGen = resCal[0]
-    calGanCon = resCal[1]
-    calGanMov = resCal[2]
+    calGanCon = resCal[2]
+    calGanMov = resCal[1]
 
     resUsers = resultados["usuarios"]
     userGanGen = resUsers[0]
-    userGanCon = resUsers[1]
-    userGanMov = resUsers[2]
+    userGanCon = resUsers[2]
+    userGanMov = resUsers[1]
 
     print("---- GENERAL ----\n"
           f"Principiante - {userGanGen[0]} - {calGanGen[0]} \n"
@@ -78,37 +78,36 @@ def mejoresCalificaciones():
     calificacionGanadorMovil = [0, 0, 0]
 
     for proyecto in proyectos:
-        print(proyecto)
-        calificacionesJueces = proyecto["calificaciones"]
+        if proyecto["calificacionesCount"] > 0:
+            calificacionesJueces = proyecto["calificaciones"]
+            nivel = proyecto["nivel"]
+            categoria = proyecto["categoria"]
+            usuario = proyecto["usuario"]
+            CalificacionesJueces = nCalificacionesJueces = promedioGeneralJueces = 0.0
+            for calificacionJuez in calificacionesJueces:
+                calificacionesJuez = nCalificacionJuez = promedioCalificacionJuez = 0.0
 
-        nivel = proyecto["nivel"]
-        categoria = proyecto["categoria"]
-        usuario = proyecto["usuario"]
-        CalificacionesJueces = nCalificacionesJueces = promedioGeneralJueces = 0.0
-        for calificacionJuez in calificacionesJueces:
-            calificacionesJuez = nCalificacionJuez = promedioCalificacionJuez = 0.0
+                for k, calificacion in calificacionJuez.items():
+                    if not isinstance(calificacion, str):
+                        calificacionesJuez += calificacion
+                        nCalificacionJuez += 1
+                promedioCalificacionJuez = calificacionesJuez / nCalificacionJuez
 
-            for k, calificacion in calificacionJuez.items():
-                if not isinstance(calificacion, str):
-                    calificacionesJuez += calificacion
-                    nCalificacionJuez += 1
-            promedioCalificacionJuez = calificacionesJuez / nCalificacionJuez
+                CalificacionesJueces += promedioCalificacionJuez
+                nCalificacionesJueces += 1
+            promedioGeneralProyecto = round((CalificacionesJueces / nCalificacionesJueces), 2)
 
-            CalificacionesJueces += promedioCalificacionJuez
-            nCalificacionesJueces += 1
-        promedioGeneralProyecto = CalificacionesJueces / nCalificacionesJueces
-
-        if promedioGeneralProyecto > calificacionGanadorGeneral[nivel]:
-            calificacionGanadorGeneral[nivel] = promedioGeneralProyecto
-            usuarioGanadorGeneral[nivel] = usuario
-        if categoria == 1:
-            if promedioGeneralProyecto > calificacionGanadorMovil[nivel]:
-                calificacionGanadorMovil[nivel] = promedioGeneralProyecto
-                usuarioGanadorMovil[nivel] = usuario
-        else:
-            if promedioGeneralProyecto > calificacionGanadorConsolaPC[nivel]:
-                calificacionGanadorConsolaPC[nivel] = promedioGeneralProyecto
-                usuarioGanadorConsolaPC[nivel] = usuario
+            if promedioGeneralProyecto > calificacionGanadorGeneral[nivel - 1]:
+                calificacionGanadorGeneral[nivel - 1] = promedioGeneralProyecto
+                usuarioGanadorGeneral[nivel - 1] = usuario
+            if categoria == 1:
+                if promedioGeneralProyecto > calificacionGanadorMovil[nivel - 1]:
+                    calificacionGanadorMovil[nivel - 1] = promedioGeneralProyecto
+                    usuarioGanadorMovil[nivel - 1] = usuario
+            else:
+                if promedioGeneralProyecto > calificacionGanadorConsolaPC[nivel - 1]:
+                    calificacionGanadorConsolaPC[nivel - 1] = promedioGeneralProyecto
+                    usuarioGanadorConsolaPC[nivel - 1] = usuario
 
     res = dict(usuarios=[usuarioGanadorGeneral, usuarioGanadorMovil, usuarioGanadorConsolaPC],
                calificaciones=[calificacionGanadorGeneral, calificacionGanadorMovil, calificacionGanadorConsolaPC])
